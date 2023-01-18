@@ -1,12 +1,5 @@
 <template>
   <div>
-    <header id="header">
-      <div class="container">
-        <div class="cart">
-          <p><i class="fas fa-shopping-cart" /> {{ cart }}</p>
-        </div>
-      </div>
-    </header>
     <div class="container">
       <div class="product">
         <div class="image"><img v-bind:src="productImage" alt="product" /></div>
@@ -44,9 +37,20 @@
           <div class="shipping">Shipping: {{ shipping }}</div>
         </div>
       </div>
-    </div>
-    <div>
-      <ProductReview> </ProductReview>
+      <div class="reviews">
+        <h2>Reviews</h2>
+        <p v-if="!reviews.length">There are no reviews yet.</p>
+        <ul>
+          <li v-for="(review, index) in reviews" :key="index">
+            <p>{{ review.name }}</p>
+            <span
+              >Rating: {{ review.rating }}, <strong>Review</strong>
+              {{ review.review }}</span
+            >
+          </li>
+        </ul>
+        <ProductReview @review-submitted="addReview"> </ProductReview>
+      </div>
       <ProductTabs />
     </div>
   </div>
@@ -73,7 +77,6 @@ export default {
       brand: "Nike",
       product: "Air Force",
       selectedVariant: 0,
-      cart: 0,
       features: ["Durable Leather", "Comfortable", "Lightweight"],
       variants: [
         {
@@ -95,15 +98,18 @@ export default {
           variantQty: 0,
         },
       ],
+      reviews: [],
     };
   },
   methods: {
     addToCart() {
-      this.cart += 1;
+      this.$emit("addToCart", this.variants[this.selectedVariant].variantId);
     },
     updateImage(index) {
       this.selectedVariant = index;
-      console.log(index);
+    },
+    addReview(productReview) {
+      this.reviews = [...this.reviews, productReview];
     },
   },
   computed: {
