@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Product />
+    <Product :member="member" />
   </div>
 </template>
 
@@ -11,6 +11,11 @@ export default {
   name: "App",
   components: {
     Product,
+  },
+  data() {
+    return {
+      member: true,
+    };
   },
 };
 </script>

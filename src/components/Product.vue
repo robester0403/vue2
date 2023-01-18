@@ -13,7 +13,7 @@
         <div class="content">
           <h1>{{ title }}</h1>
           <div class="stockinfo">
-            <span class="green" v-if="{ inStock }">In Stock</span>
+            <span class="green" v-if="inventory > 19">In Stock</span>
             <span class="amber" v-else-if="inventory > 0">Low Stock</span>
             <span class="red" v-else>Out of Stock</span>
           </div>
@@ -41,25 +41,38 @@
               </button>
             </div>
           </div>
+          <div class="shipping">Shipping: {{ shipping }}</div>
         </div>
       </div>
+    </div>
+    <div>
+      <ProductReview> </ProductReview>
+      <ProductTabs />
     </div>
   </div>
 </template>
 
 <script>
+import ProductReview from "./ProductReview.vue";
+import ProductTabs from "./ProductTabs.vue";
 export default {
+  components: {
+    ProductReview,
+    ProductTabs,
+  },
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Product",
-  inStock() {
-    return this.inventory > 50;
+  props: {
+    member: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       brand: "Nike",
       product: "Air Force",
       selectedVariant: 0,
-      inventory: 10,
       cart: 0,
       features: ["Durable Leather", "Comfortable", "Lightweight"],
       variants: [
@@ -96,6 +109,18 @@ export default {
   computed: {
     title() {
       return `${this.brand} ${this.product}`;
+    },
+    productImage() {
+      return this.variants[this.selectedVariant].variantImage;
+    },
+    inventory() {
+      return this.variants[this.selectedVariant].variantQty;
+    },
+    shipping() {
+      if (this.member) {
+        return "Included with Membership";
+      }
+      return "$2.99";
     },
   },
 };
